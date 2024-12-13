@@ -1,5 +1,6 @@
 'use client';
 
+import { ColumnDef, Row } from '@tanstack/react-table';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -12,12 +13,14 @@ import { formatCurrency, formatPercent } from '@/lib/utils';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/data-table/column-header';
 import Link from 'next/link';
 import { MoreHorizontal } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { formatDatetime } from '@/lib/utils';
+import { remove } from '@/actions/products/action';
+import useConfirm from '@/hooks/use-confirm';
+import { useToast } from '@/hooks/use-toast';
 
 export const columns: ColumnDef<Product>[] = [
 	{
@@ -111,31 +114,62 @@ export const columns: ColumnDef<Product>[] = [
 		id: 'actions',
 		header: 'Actions',
 		cell: ({ row }) => {
-			const view = '/products/' + row.original.product_id;
-			const edit = '/products/' + row.original.product_id + '/edit';
-
-			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant='ghost' size='icon'>
-							<span className='sr-only'>Open menu</span>
-							<MoreHorizontal className='h-4 w-4' />
-						</Button>
-					</DropdownMenuTrigger>
-
-					<DropdownMenuContent align='end' className='w-40'>
-						<DropdownMenuLabel>Actions</DropdownMenuLabel>
-						<DropdownMenuSeparator />
-						<Link href={view}>
-							<DropdownMenuItem>View Product</DropdownMenuItem>
-						</Link>
-						<Link href={edit}>
-							<DropdownMenuItem>Edit Product</DropdownMenuItem>
-						</Link>
-						<DropdownMenuItem className='text-destructive'>Delete Product</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			);
+			return <TableAction row={row} />;
 		},
 	},
 ];
+
+interface TableActionProps {
+	row: Row<Product>;
+}
+
+const TableAction: React.FC<TableActionProps> = ({ row }) => {
+	const view = '/products/' + row.original.product_id;
+	const edit = '/products/' + row.original.product_id + '/edit';
+
+	const { toast } = useToast();
+	const { confirm } = useConfirm();
+
+	async function handleDelete() {
+		confirm({
+			title: 'Delete Product',
+			description: 'Are you sure you want to delete this product? This action cannot be undone.',
+			variant: 'destructive',
+		})
+			.then(async () => {
+				await remove(row.original.product_id);
+
+				toast({
+					title: 'Product deleted',
+					description: 'Product has been deleted successfully',
+				});
+			})
+			.catch(() => {
+				console.log('Cancelled');
+			});
+	}
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button variant='ghost' size='icon'>
+					<span className='sr-only'>Open menu</span>
+					<MoreHorizontal className='h-4 w-4' />
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align='end' className='w-40'>
+				<DropdownMenuLabel>Actions</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+				<Link href={view}>
+					<DropdownMenuItem>View Product</DropdownMenuItem>
+				</Link>
+				<Link href={edit}>
+					<DropdownMenuItem>Edit Product</DropdownMenuItem>
+				</Link>
+				<DropdownMenuItem className='text-destructive' onClick={handleDelete}>
+					Delete Product
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+};

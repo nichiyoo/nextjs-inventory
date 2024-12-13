@@ -13,7 +13,6 @@ import {
 	ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { temp } from '@/lib/contant';
 
 const chartConfig = {
 	visitors: {
@@ -29,18 +28,28 @@ const chartConfig = {
 	},
 } satisfies ChartConfig;
 
-export function Chart() {
+interface ChartProps {
+	data: Array<{
+		date: string;
+		mobile: number;
+		desktop: number;
+	}>;
+}
+
+export function Chart({ data }: ChartProps) {
 	const [timeRange, setTimeRange] = React.useState('90d');
 
-	const filteredData = temp.filter((item) => {
+	const filteredData = data.filter((item) => {
 		const date = new Date(item.date);
 		const referenceDate = new Date('2024-06-30');
 		let daysToSubtract = 90;
+
 		if (timeRange === '30d') {
 			daysToSubtract = 30;
 		} else if (timeRange === '7d') {
 			daysToSubtract = 7;
 		}
+
 		const startDate = new Date(referenceDate);
 		startDate.setDate(startDate.getDate() - daysToSubtract);
 		return date >= startDate;

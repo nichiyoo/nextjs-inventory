@@ -14,7 +14,7 @@ export function Pagination<TData>({ table }: DataTablePaginationProps<TData>) {
 	return (
 		<div className='flex items-center justify-between px-2'>
 			<div className='flex items-center space-x-2'>
-				<p className='text-sm font-medium'>Baris per halaman</p>
+				<p className='text-sm font-medium'>Rows per page</p>
 				<Select
 					value={size}
 					onValueChange={(value) => {
@@ -24,7 +24,7 @@ export function Pagination<TData>({ table }: DataTablePaginationProps<TData>) {
 						<SelectValue placeholder={table.getState().pagination.pageSize} />
 					</SelectTrigger>
 					<SelectContent side='top'>
-						{[10, 20, 30, 40, 50].map((pageSize) => (
+						{[5, 10, 20, 30, 40, 50].map((pageSize) => (
 							<SelectItem key={pageSize} value={`${pageSize}`}>
 								{pageSize}
 							</SelectItem>
@@ -35,7 +35,7 @@ export function Pagination<TData>({ table }: DataTablePaginationProps<TData>) {
 
 			<div className='flex items-center'>
 				<div className='flex items-center justify-center text-sm font-medium whitespace-nowrap'>
-					Halaman {table.getState().pagination.pageIndex + 1} dari {table.getPageCount()}
+					Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
 				</div>
 
 				<div className='flex items-center space-x-2'>

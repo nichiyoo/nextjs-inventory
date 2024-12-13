@@ -5,7 +5,6 @@ import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { temp } from '@/lib/contant';
 
 const chartConfig = {
 	views: {
@@ -21,23 +20,33 @@ const chartConfig = {
 	},
 } satisfies ChartConfig;
 
-export function Chart() {
+interface ChartProps {
+	title: string;
+	description: string;
+	data: Array<{
+		date: string;
+		mobile: number;
+		desktop: number;
+	}>;
+}
+
+export function Chart({ title, description, data }: ChartProps) {
 	const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>('desktop');
 
 	const total = React.useMemo(
 		() => ({
-			desktop: temp.reduce((acc, curr) => acc + curr.desktop, 0),
-			mobile: temp.reduce((acc, curr) => acc + curr.mobile, 0),
+			desktop: data.reduce((acc, curr) => acc + curr.desktop, 0),
+			mobile: data.reduce((acc, curr) => acc + curr.mobile, 0),
 		}),
-		[]
+		[data]
 	);
 
 	return (
 		<Card>
 			<CardHeader className='flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row'>
 				<div className='flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6'>
-					<CardTitle>Bar Chart - Interactive</CardTitle>
-					<CardDescription>Showing total visitors for the last 3 months</CardDescription>
+					<CardTitle>{title}</CardTitle>
+					<CardDescription>{description}</CardDescription>
 				</div>
 				<div className='flex'>
 					{['desktop', 'mobile'].map((key) => {
@@ -61,7 +70,7 @@ export function Chart() {
 				<ChartContainer config={chartConfig} className='aspect-auto h-[250px] w-full'>
 					<BarChart
 						accessibilityLayer
-						data={temp}
+						data={data}
 						margin={{
 							left: 12,
 							right: 12,

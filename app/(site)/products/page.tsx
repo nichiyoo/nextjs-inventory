@@ -6,11 +6,9 @@ import { Button } from '@/components/ui/button';
 import { DefaultTable } from '@/components/data-table/default-table';
 import Link from 'next/link';
 import { PlusIcon } from 'lucide-react';
-import { Search } from './search';
-import { columns } from './columns';
+import { Search } from '@/components/products/search';
+import { columns } from '@/components/products/columns';
 import db from '@/lib/drizzle';
-
-// import { products } from '@/lib/temp';
 
 interface PageProps {
 	searchParams: {
@@ -47,7 +45,7 @@ export default async function Page({ searchParams }: PageProps): Promise<React.J
 					<Link href='/products/create'>
 						<Button>
 							<PlusIcon className='size-4' />
-							<span>Tambah Produk</span>
+							<span>New Product</span>
 						</Button>
 					</Link>
 				</div>

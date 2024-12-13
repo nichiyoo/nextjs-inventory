@@ -33,3 +33,9 @@ export type Sales = Omit<Transaction, 'type'> & { type: 'sales' };
 export type Procurement = Omit<Transaction, 'type'> & { type: 'procurements' };
 
 export type User = InferSelectModel<typeof users>;
+
+export interface ToastProps {
+	title: string;
+	description: string;
+	variant?: 'default' | 'destructive';
+}

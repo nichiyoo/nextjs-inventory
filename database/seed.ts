@@ -4,22 +4,16 @@ import * as schema from '../database/schema';
 
 import { reset, seed } from 'drizzle-seed';
 
-import { columns } from '@/app/(site)/(transaction)/columns';
-import { create } from 'domain';
 import { createClient } from '@libsql/client';
 import { drizzle } from 'drizzle-orm/libsql';
-
-const production = {
-	url: process.env.TURSO_DATABASE_URL!,
-	authToken: process.env.TURSO_AUTH_TOKEN!,
-};
+import { subMonths } from 'date-fns';
 
 const development = {
 	url: process.env.DATABASE_FILE_NAME!,
 };
 
 export default async function main() {
-	const client = createClient(process.env.NODE_ENV === 'production' ? production : development);
+	const client = createClient(development);
 	const db = drizzle({
 		client,
 	});
@@ -40,14 +34,17 @@ export default async function main() {
 			'Minuman',
 		];
 
+		const end = new Date();
+		const start = subMonths(end, 3);
+
 		const timestamp = {
 			created_at: fake.date({
-				minDate: new Date('2023-01-01'),
-				maxDate: new Date(),
+				minDate: start,
+				maxDate: end,
 			}),
 			updated_at: fake.date({
-				minDate: new Date('2023-01-01'),
-				maxDate: new Date(),
+				minDate: start,
+				maxDate: end,
 			}),
 		};
 
@@ -88,8 +85,8 @@ export default async function main() {
 						maxValue: 50,
 					}),
 					date: fake.date({
-						minDate: new Date('2023-01-01'),
-						maxDate: new Date(),
+						minDate: start,
+						maxDate: end,
 					}),
 					total: fake.valuesFromArray({
 						values: [5000, 7000, 10000, 15000, 20000].map((value) => value * 100),
@@ -100,6 +97,14 @@ export default async function main() {
 					...timestamp,
 				},
 				count: count * 4,
+			},
+			users: {
+				columns: {
+					role: fake.valuesFromArray({
+						values: ['user', 'admin'],
+					}),
+				},
+				count: 10,
 			},
 		};
 	});

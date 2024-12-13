@@ -18,7 +18,7 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant='outline'>Tampilkan Kolom</Button>
+				<Button variant='outline'>Toggle Column</Button>
 			</DropdownMenuTrigger>
 
 			<DropdownMenuContent align='start'>

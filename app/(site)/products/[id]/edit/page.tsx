@@ -2,7 +2,12 @@ import * as React from 'react';
 
 import { Header, HeaderDescription, HeaderTitle } from '@/components/heading';
 
-import { products } from '@/lib/temp';
+import { ProductForm } from '@/components/products/form';
+import db from '@/lib/drizzle';
+import { eq } from 'drizzle-orm';
+import { notFound } from 'next/navigation';
+import { products } from '@/database/schema';
+import { update } from '@/actions/products/action';
 
 interface PageProps {
 	params: {
@@ -11,10 +16,12 @@ interface PageProps {
 }
 
 export default async function Page({ params }: PageProps): Promise<React.JSX.Element> {
-	await new Promise((resolve) => setTimeout(resolve, 1000));
-
 	const { id } = params;
-	const product = products.find((product) => product.product_id === Number(id));
+	const data = await db.query.products.findFirst({
+		where: eq(products.product_id, Number(id)),
+	});
+
+	if (!data) notFound();
 
 	return (
 		<div className='grid gap-8'>
@@ -26,7 +33,9 @@ export default async function Page({ params }: PageProps): Promise<React.JSX.Ele
 				</HeaderDescription>
 			</Header>
 
-			<pre>{JSON.stringify(product, null, 2)}</pre>
+			<div className='border border-border p-8 rounded-xl bg-card'>
+				<ProductForm action={update} mode='edit' defaultValues={data} />
+			</div>
 		</div>
 	);
 }

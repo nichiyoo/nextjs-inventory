@@ -4,6 +4,7 @@ import { Bricolage_Grotesque, Inter } from 'next/font/google';
 
 import type { Metadata } from 'next';
 import { ThemeProvider } from '@/components/theme/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 
 const inter = Inter({
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 			<body className={cn('antialiased font-sans', inter.variable, bricolage.variable)}>
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
 					{children}
+					<Toaster />
 				</ThemeProvider>
 			</body>
 		</html>

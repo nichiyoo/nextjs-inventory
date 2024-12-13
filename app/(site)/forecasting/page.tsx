@@ -2,9 +2,7 @@ import * as React from 'react';
 
 import { Header, HeaderDescription, HeaderTitle } from '@/components/heading';
 
-import { Chart } from './chart';
 import { StatCard } from '@/components/stat';
-import { TrendingUp } from 'lucide-react';
 import { compactNumber } from '@/lib/utils';
 
 export default async function Page(): Promise<React.JSX.Element> {
@@ -19,13 +17,11 @@ export default async function Page(): Promise<React.JSX.Element> {
 			</Header>
 
 			<div className='grid lg:grid-cols-4 gap-6'>
-				<StatCard title='Jenis Produk' value={compactNumber(143)} icon={TrendingUp} />
-				<StatCard title='Stok Produk' value={compactNumber(9052)} icon={TrendingUp} />
-				<StatCard title='Penjualan Produk' value={compactNumber(234823843)} icon={TrendingUp} />
-				<StatCard title='Total Transaction' value={compactNumber(94823843)} icon={TrendingUp} />
+				<StatCard title='Jenis Produk' value={compactNumber(143)} />
+				<StatCard title='Stok Produk' value={compactNumber(9052)} />
+				<StatCard title='Penjualan Produk' value={compactNumber(234823843)} />
+				<StatCard title='Total Transaction' value={compactNumber(94823843)} />
 			</div>
-
-			<Chart />
 		</div>
 	);
 }

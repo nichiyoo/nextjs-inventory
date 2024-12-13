@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import {
 	ColumnDef,
+	PaginationState,
 	SortingState,
 	VisibilityState,
 	flexRender,
@@ -25,6 +26,12 @@ interface DefaultTable<TData, TValue> {
 
 export function DefaultTable<TData, TValue>({ columns, data, children }: DefaultTable<TData, TValue>) {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
+
+	const [pagination, setPagination] = React.useState<PaginationState>({
+		pageIndex: 0,
+		pageSize: 5,
+	});
+
 	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
 		created_at: false,
 		updated_at: false,
@@ -38,8 +45,10 @@ export function DefaultTable<TData, TValue>({ columns, data, children }: Default
 		getSortedRowModel: getSortedRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
 		onSortingChange: setSorting,
+		onPaginationChange: setPagination,
 		state: {
 			sorting,
+			pagination,
 			columnVisibility,
 		},
 	});
