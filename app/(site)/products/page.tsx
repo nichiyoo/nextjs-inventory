@@ -9,16 +9,20 @@ import { PlusIcon } from 'lucide-react';
 import { Search } from '@/components/products/search';
 import { columns } from '@/components/products/columns';
 import db from '@/lib/drizzle';
+import { products } from '@/database/schema';
+
+export const dynamic = 'force-dynamic';
 
 interface PageProps {
-	searchParams: {
+	searchParams: Promise<{
 		keyword: string;
-	};
+	}>;
 }
 
-export default async function Page({ searchParams }: PageProps): Promise<React.JSX.Element> {
+export default async function Page(props: PageProps): Promise<React.JSX.Element> {
+	const searchParams = await props.searchParams;
 	const keyword = searchParams.keyword as string;
-	const data = await db.query.products.findMany();
+	const data = await db.select().from(products);
 
 	const filtered = keyword
 		? data.filter((item) => {

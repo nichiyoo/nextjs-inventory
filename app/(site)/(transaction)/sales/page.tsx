@@ -12,6 +12,8 @@ import { eq } from 'drizzle-orm';
 import { transactions } from '@/database/schema';
 import { types } from '@/lib/contant';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page(): Promise<React.JSX.Element> {
 	const data = await db.query.transactions.findMany({
 		where: eq(transactions.type, types.sales),

@@ -10,13 +10,15 @@ import { products } from '@/database/schema';
 import { update } from '@/actions/products/action';
 
 interface PageProps {
-	params: {
+	params: Promise<{
 		id: string;
-	};
+	}>;
 }
 
-export default async function Page({ params }: PageProps): Promise<React.JSX.Element> {
+export default async function Page(props: PageProps): Promise<React.JSX.Element> {
+	const params = await props.params;
 	const { id } = params;
+
 	const data = await db.query.products.findFirst({
 		where: eq(products.product_id, Number(id)),
 	});

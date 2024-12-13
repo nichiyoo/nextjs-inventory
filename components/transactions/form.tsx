@@ -17,11 +17,11 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-const transactionSchema = z.object({
+const schema = z.object({
 	transaction_id: z.number().optional(),
 	product_id: z.coerce.number(),
-	quantity: z.number().int('Quantity must be an integer').positive('Quantity must be positive'),
-	date: z.date({
+	quantity: z.number().int('Quantity must be an integer'),
+	date: z.coerce.date({
 		required_error: 'Date is required',
 		invalid_type_error: "That's not a date!",
 	}),
@@ -29,7 +29,7 @@ const transactionSchema = z.object({
 	type: z.enum(['sales', 'procurements']),
 });
 
-type TransactionFormValues = z.infer<typeof transactionSchema>;
+type TransactionFormValues = z.infer<typeof schema>;
 
 interface TransactionFormProps {
 	defaultValues?: Partial<TransactionFormValues>;
@@ -61,7 +61,7 @@ export function TransactionForm({ defaultValues, products, actions, mode }: Tran
 	const message = messages[mode];
 
 	const form = useForm<TransactionFormValues>({
-		resolver: zodResolver(transactionSchema),
+		resolver: zodResolver(schema),
 		defaultValues: defaultValues || {
 			quantity: 1,
 			date: new Date(),
@@ -74,6 +74,7 @@ export function TransactionForm({ defaultValues, products, actions, mode }: Tran
 		try {
 			await actions(data);
 			toast(message);
+			router.push('/sales');
 		} catch (error) {
 			toast(messages.error);
 			console.error(error);

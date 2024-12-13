@@ -11,6 +11,8 @@ import { compactNumber } from '@/lib/utils';
 import db from '@/lib/drizzle';
 import { types } from '@/lib/contant';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page(): Promise<React.JSX.Element> {
 	const end = new Date();
 	const start = subMonths(end, 3);

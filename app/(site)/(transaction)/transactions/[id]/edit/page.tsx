@@ -10,18 +10,20 @@ import { transactions } from '@/database/schema';
 import { update } from '@/actions/transactions/action';
 
 interface PageProps {
-	params: {
+	params: Promise<{
 		id: string;
-	};
+	}>;
 }
 
-export default async function Page({ params }: PageProps): Promise<React.JSX.Element> {
+export default async function Page(props: PageProps): Promise<React.JSX.Element> {
+	const params = await props.params;
 	const { id } = params;
-	const products = await db.query.products.findMany();
 
+	const products = await db.query.products.findMany();
 	const data = await db.query.transactions.findFirst({
 		where: eq(transactions.transaction_id, Number(id)),
 	});
+
 	if (!data) notFound();
 
 	return (
@@ -35,15 +37,7 @@ export default async function Page({ params }: PageProps): Promise<React.JSX.Ele
 			</Header>
 
 			<div className='border border-border p-8 rounded-xl bg-card'>
-				<TransactionForm
-					products={products}
-					actions={update}
-					mode='edit'
-					defaultValues={{
-						...data,
-						date: new Date(data.date),
-					}}
-				/>
+				<TransactionForm products={products} actions={update} mode='edit' defaultValues={data} />
 			</div>
 		</div>
 	);

@@ -7,7 +7,7 @@ import { create } from '@/actions/transactions/action';
 import db from '@/lib/drizzle';
 
 export default async function Page(): Promise<React.JSX.Element> {
-	const data = await db.query.products.findMany();
+	const products = await db.query.products.findMany();
 
 	return (
 		<div className='grid gap-8'>
@@ -20,7 +20,7 @@ export default async function Page(): Promise<React.JSX.Element> {
 			</Header>
 
 			<div className='border border-border p-8 rounded-xl bg-card'>
-				<TransactionForm products={data} actions={create} mode='create' />
+				<TransactionForm products={products} actions={create} mode='create' />
 			</div>
 		</div>
 	);

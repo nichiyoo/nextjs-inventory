@@ -11,13 +11,13 @@ import { notFound } from 'next/navigation';
 import { products } from '@/database/schema';
 
 interface PageProps {
-	params: {
+	params: Promise<{
 		id: string;
-	};
+	}>;
 }
 
-export default async function Page({ params }: PageProps): Promise<React.JSX.Element> {
-	await new Promise((resolve) => setTimeout(resolve, 1000));
+export default async function Page(props: PageProps): Promise<React.JSX.Element> {
+	const params = await props.params;
 
 	const { id } = params;
 	const data = await db.query.products.findFirst({

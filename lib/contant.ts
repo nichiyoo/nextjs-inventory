@@ -6,21 +6,16 @@ export const route = {
 			title: 'Main Menu',
 			items: [
 				{ url: '/dashboard', title: 'Dashboard', icon: ChartColumnBig },
-
 				{ url: '/products', title: 'Products Data', icon: Box },
 				{ url: '/products/create', icon: Box, title: 'Create Product', hidden: true },
 				{ url: '/products/*', icon: Box, title: 'Products Detail', hidden: true },
-
 				{ url: '/sales', title: 'Sales Data', icon: ShoppingCart },
 				{ url: '/procurements', title: 'Procurements Data', icon: Store },
 			],
 		},
 		{
 			title: 'Forecasting',
-			items: [
-				{ url: '/forecasting', title: 'Product Forecasting', icon: TrendingUpDown },
-				{ url: '/forecasting', title: 'Product Forecasting', icon: TrendingUpDown },
-			],
+			items: [{ url: '/forecasting', title: 'Product Forecasting', icon: TrendingUpDown }],
 		},
 		{
 			title: 'Administration',

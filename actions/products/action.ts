@@ -3,7 +3,7 @@
 import db from '@/lib/drizzle';
 import { eq } from 'drizzle-orm';
 import { products } from '@/database/schema';
-import { revalidatePath } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -11,7 +11,7 @@ const schema = z.object({
 	name: z.string().min(1, 'Name is required'),
 	unit: z.string().min(1, 'Unit is required'),
 	price: z.number().positive('Price must be positive'),
-	stock: z.number().int('Stock must be an integer').nonnegative('Stock must be non-negative'),
+	stock: z.number().int('Stock must be an integer'),
 	holding_cost: z.number().nonnegative('Holding cost must be non-negative'),
 	order_cost: z.number().nonnegative('Order cost must be non-negative'),
 });
@@ -27,8 +27,7 @@ export async function create(data: z.infer<typeof schema>) {
 	if (!result.success) throw result.error;
 
 	await db.insert(products).values(result.data);
-
-	revalidatePath('/products');
+	revalidateTag('products');
 }
 
 export async function update(data: z.infer<typeof schema>) {
@@ -47,10 +46,8 @@ export async function update(data: z.infer<typeof schema>) {
 		})
 		.where(eq(products.product_id, result.data.product_id));
 
-	revalidatePath('/sales');
-	revalidatePath('/products');
-	revalidatePath('/procurements');
-	revalidatePath('/products/' + result.data.product_id);
+	revalidateTag('products');
+	revalidateTag('transactions');
 }
 
 export async function remove(id: number) {
@@ -59,7 +56,6 @@ export async function remove(id: number) {
 
 	await db.delete(products).where(eq(products.product_id, id));
 
-	revalidatePath('/sales');
-	revalidatePath('/products');
-	revalidatePath('/procurements');
+	revalidateTag('products');
+	revalidateTag('transactions');
 }

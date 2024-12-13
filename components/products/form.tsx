@@ -13,17 +13,17 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-const productSchema = z.object({
+const schema = z.object({
 	product_id: z.number().optional(),
 	name: z.string().min(1, 'Name is required'),
 	unit: z.string().min(1, 'Unit is required'),
 	price: z.number().positive('Price must be positive'),
-	stock: z.number().int('Stock must be an integer').nonnegative('Stock must be non-negative'),
+	stock: z.number().int('Stock must be an integer'),
 	holding_cost: z.number().nonnegative('Holding cost must be non-negative'),
 	order_cost: z.number().nonnegative('Order cost must be non-negative'),
 });
 
-type ProductFormValues = z.infer<typeof productSchema>;
+type ProductFormValues = z.infer<typeof schema>;
 
 interface ProductFormProps {
 	defaultValues?: Partial<ProductFormValues>;
@@ -54,7 +54,7 @@ export function ProductForm({ defaultValues, action, mode }: ProductFormProps) {
 	const message = messages[mode];
 
 	const form = useForm<ProductFormValues>({
-		resolver: zodResolver(productSchema),
+		resolver: zodResolver(schema),
 		defaultValues: defaultValues || {
 			name: '',
 			unit: '',
@@ -143,9 +143,12 @@ export function ProductForm({ defaultValues, action, mode }: ProductFormProps) {
 										placeholder='0'
 										{...field}
 										onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+										disabled
 									/>
 								</FormControl>
-								<FormDescription>The current quantity of this product in stock.</FormDescription>
+								<FormDescription>
+									This value calculated automatically based on sales and procurements transactions.
+								</FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}

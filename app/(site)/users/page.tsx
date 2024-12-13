@@ -10,6 +10,8 @@ import { columns } from '@/components/users/columns';
 import db from '@/lib/drizzle';
 import { users } from '@/database/schema';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page(): Promise<React.JSX.Element> {
 	const data = await db.select().from(users);
 
