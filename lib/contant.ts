@@ -14,15 +14,11 @@ export const route = {
 			],
 		},
 		{
-			title: 'Forecasting',
-			items: [{ url: '/forecasting', title: 'Product Forecasting', icon: TrendingUpDown }],
-		},
-		{
 			title: 'Administration',
 			items: [
 				{ url: '/users', title: 'User Management', icon: User2 },
-				{ url: '/auth/signin', title: 'User Sign In', icon: User2 },
-				{ url: '/auth/signup', title: 'User Sign Up', icon: User2 },
+				{ url: '/auth/signin', title: 'User Sign In', icon: User2, hidden: true },
+				{ url: '/auth/signup', title: 'User Sign Up', icon: User2, hidden: true },
 			],
 		},
 	],

@@ -8,14 +8,14 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '
 
 const chartConfig = {
 	views: {
-		label: 'Page Views',
+		label: 'Transaction',
 	},
-	desktop: {
-		label: 'Desktop',
+	procurements: {
+		label: 'Procurement',
 		color: 'hsl(var(--chart-1))',
 	},
-	mobile: {
-		label: 'Mobile',
+	sales: {
+		label: 'Sales',
 		color: 'hsl(var(--chart-2))',
 	},
 } satisfies ChartConfig;
@@ -25,18 +25,18 @@ interface ChartProps {
 	description: string;
 	data: Array<{
 		date: string;
-		mobile: number;
-		desktop: number;
+		sales: number;
+		procurements: number;
 	}>;
 }
 
 export function Chart({ title, description, data }: ChartProps) {
-	const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>('desktop');
+	const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>('procurements');
 
 	const total = React.useMemo(
 		() => ({
-			desktop: data.reduce((acc, curr) => acc + curr.desktop, 0),
-			mobile: data.reduce((acc, curr) => acc + curr.mobile, 0),
+			procurements: data.reduce((acc, curr) => acc + curr.procurements, 0),
+			sales: data.reduce((acc, curr) => acc + curr.sales, 0),
 		}),
 		[data]
 	);
@@ -49,7 +49,7 @@ export function Chart({ title, description, data }: ChartProps) {
 					<CardDescription>{description}</CardDescription>
 				</div>
 				<div className='flex'>
-					{['desktop', 'mobile'].map((key) => {
+					{['procurements', 'sales'].map((key) => {
 						const chart = key as keyof typeof chartConfig;
 						return (
 							<button

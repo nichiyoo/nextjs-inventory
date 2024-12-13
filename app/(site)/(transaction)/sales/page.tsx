@@ -20,6 +20,7 @@ export default async function Page(): Promise<React.JSX.Element> {
 		with: {
 			product: true,
 		},
+		orderBy: (transactions, { desc }) => desc(transactions.date),
 	});
 
 	return (

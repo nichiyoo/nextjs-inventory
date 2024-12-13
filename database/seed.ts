@@ -4,10 +4,10 @@ import * as schema from '../database/schema';
 
 import { eq, sql } from 'drizzle-orm';
 import { reset, seed } from 'drizzle-seed';
+import { subMonths, subYears } from 'date-fns';
 
 import { createClient } from '@libsql/client';
 import { drizzle } from 'drizzle-orm/libsql';
-import { subMonths } from 'date-fns';
 
 const development = {
 	url: process.env.DATABASE_FILE_NAME!,
@@ -34,7 +34,7 @@ export default async function main() {
 	];
 
 	const end = new Date();
-	const start = subMonths(end, 3);
+	const start = subYears(end, 1);
 
 	await reset(db, schema);
 	await seed(db, schema).refine((fake) => {
@@ -60,12 +60,14 @@ export default async function main() {
 				columns: {
 					product_id: fake.int({ minValue: 1, maxValue: count }),
 					date: fake.date({ minDate: start, maxDate: end }),
-					total: fake.valuesFromArray({ values: [5000, 7000, 10000, 15000, 20000].map((value) => value * 100) }),
-					type: fake.valuesFromArray({ values: ['sales', 'procurements'] }),
-					quantity: fake.default({ defaultValue: 0 }),
+					total: fake.valuesFromArray({
+						values: [5000, 7000, 10000, 15000, 20000].map((value) => value * 100),
+					}),
+					type: fake.default({ defaultValue: 'sales' }),
+					quantity: fake.int({ minValue: 10, maxValue: 30 }),
 					...timestamp,
 				},
-				count: count * 4,
+				count: count * 100,
 			},
 			users: {
 				columns: {

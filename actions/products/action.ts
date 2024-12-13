@@ -1,5 +1,9 @@
 'use server';
 
+import { addMonths, eachDayOfInterval, isSameDay, startOfMonth, subYears } from 'date-fns';
+
+// @ts-expect-error no types for arima library
+import ARIMA from 'arima';
 import db from '@/lib/drizzle';
 import { eq } from 'drizzle-orm';
 import { products } from '@/database/schema';
@@ -58,4 +62,112 @@ export async function remove(id: number) {
 
 	revalidateTag('products');
 	revalidateTag('transactions');
+}
+
+interface DailyData {
+	date: Date;
+	quantity: number;
+}
+
+interface MonthlyData {
+	month: Date;
+	quantity: number;
+	avergae: number;
+}
+
+export async function forecast(id: number) {
+	const data = await db.query.products.findFirst({
+		where: eq(products.product_id, id),
+		with: {
+			transactions: true,
+		},
+	});
+
+	if (!data) throw new Error('Product not found');
+
+	const end = new Date();
+	const start = subYears(end, 1);
+	const range = eachDayOfInterval({ start, end });
+
+	const daily: DailyData[] = range.map((date) => {
+		const sales = data.transactions.filter((item) => isSameDay(item.date, date));
+		return {
+			date: date,
+			quantity: sales.reduce((acc, curr) => acc + Math.abs(curr.quantity), 0),
+		};
+	});
+
+	const monthly: MonthlyData[] = [];
+	const groups = daily.reduce((acc, item) => {
+		const month = startOfMonth(item.date).toISOString();
+		if (!acc[month]) acc[month] = [];
+		acc[month].push(item.quantity);
+		return acc;
+	}, {} as Record<string, number[]>);
+
+	Object.entries(groups).forEach(([month, quantities]) => {
+		const total = quantities.reduce((sum, quantity) => sum + quantity, 0);
+		const average = quantities.reduce((sum, quantity) => sum + quantity, 0) / quantities.length;
+
+		monthly.push({
+			month: new Date(month),
+			quantity: total,
+			avergae: average,
+		});
+	});
+
+	monthly.sort((a, b) => a.month.getTime() - b.month.getTime());
+	const arima = new ARIMA({
+		p: 1,
+		d: 0,
+		q: 1,
+		verbose: false,
+	});
+
+	await arima.fit(monthly.map((month) => month.quantity));
+	const [pastForecast] = arima.predict(12);
+	const [futureForecast] = arima.predict(1);
+
+	const total = monthly.reduce((sum, item) => sum + item.quantity, 0);
+	const average = total / monthly.length;
+	const annual = average * 12;
+
+	const eoq = Math.sqrt((2 * data.order_cost * annual) / data.holding_cost);
+
+	const lead = 2;
+	const score = 1.96;
+	const stdev = deviation(monthly.map((m) => m.quantity));
+
+	const safe = stdev * score;
+	const rop = (average / 30) * lead + safe;
+
+	const past = pastForecast.map((quantity: number, index: number) => ({
+		month: addMonths(start, index),
+		quantity: quantity,
+		type: 'past_forecast',
+	}));
+
+	const future = futureForecast.map((quantity: number, index: number) => ({
+		month: end,
+		quantity: quantity,
+		type: 'future_forecast',
+	}));
+
+	return {
+		monthly,
+		past,
+		future,
+		average,
+		eoq,
+		rop,
+		safe,
+	};
+}
+
+function deviation(values: number[]): number {
+	const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
+	const diff = values.map((value) => Math.pow(value - avg, 2));
+	const avgdiff = diff.reduce((sum, val) => sum + val, 0) / values.length;
+
+	return Math.sqrt(avgdiff);
 }
