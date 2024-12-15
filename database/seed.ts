@@ -56,19 +56,19 @@ export default async function main() {
 				},
 				count: count,
 			},
-			transactions: {
-				columns: {
-					product_id: fake.int({ minValue: 1, maxValue: count }),
-					date: fake.date({ minDate: start, maxDate: end }),
-					total: fake.valuesFromArray({
-						values: [5000, 7000, 10000, 15000, 20000].map((value) => value * 100),
-					}),
-					type: fake.default({ defaultValue: 'sales' }),
-					quantity: fake.int({ minValue: 10, maxValue: 30 }),
-					...timestamp,
-				},
-				count: count * 100,
-			},
+			// transactions: {
+			// 	columns: {
+			// 		product_id: fake.int({ minValue: 1, maxValue: count }),
+			// 		date: fake.date({ minDate: start, maxDate: end }),
+			// 		total: fake.valuesFromArray({
+			// 			values: [5000, 7000, 10000, 15000, 20000].map((value) => value * 100),
+			// 		}),
+			// 		type: fake.default({ defaultValue: 'sales' }),
+			// 		quantity: fake.int({ minValue: 10, maxValue: 30 }),
+			// 		...timestamp,
+			// 	},
+			// 	count: count * 100,
+			// },
 			users: {
 				columns: {
 					role: fake.valuesFromArray({ values: ['user', 'admin'] }),

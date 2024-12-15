@@ -43,7 +43,7 @@ export async function create(data: z.infer<typeof schema>) {
 	const multiplier = result.data.type === 'sales' ? -1 : 1;
 	await db.insert(transactions).values({
 		...result.data,
-		quantity: result.data.quantity * multiplier,
+		quantity: Math.abs(result.data.quantity) * multiplier,
 	});
 
 	const stock = await total(result.data.product_id);
@@ -54,9 +54,6 @@ export async function create(data: z.infer<typeof schema>) {
 			updated_at: new Date(),
 		})
 		.where(eq(products.product_id, result.data.product_id));
-
-	revalidateTag('products');
-	revalidateTag('transaction');
 }
 
 export async function update(data: z.infer<typeof schema>) {
@@ -86,9 +83,6 @@ export async function update(data: z.infer<typeof schema>) {
 			updated_at: new Date(),
 		})
 		.where(eq(products.product_id, result.data.product_id));
-
-	revalidateTag('products');
-	revalidateTag('transaction');
 }
 
 export async function remove(id: number) {
@@ -105,7 +99,4 @@ export async function remove(id: number) {
 			updated_at: new Date(),
 		})
 		.where(eq(products.product_id, transaction.product_id));
-
-	revalidateTag('products');
-	revalidateTag('transaction');
 }

@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNotification } from '@/store/use-notification';
 
 const userSchema = z.object({
 	user_id: z.number().optional(),
@@ -32,6 +33,7 @@ interface UserFormProps {
 export function UserForm({ defaultValues, action, mode }: UserFormProps) {
 	const router = useRouter();
 	const { toast } = useToast();
+	const { notify } = useNotification();
 
 	const messages: Record<string, ToastProps> = {
 		create: {
@@ -62,7 +64,10 @@ export function UserForm({ defaultValues, action, mode }: UserFormProps) {
 	async function handleSubmit(data: UserFormValues) {
 		try {
 			await action(data);
+
 			toast(message);
+			notify(message);
+
 			router.push('/users');
 		} catch (error) {
 			toast(messages.error);
@@ -81,7 +86,11 @@ export function UserForm({ defaultValues, action, mode }: UserFormProps) {
 							<FormItem>
 								<FormLabel>Name</FormLabel>
 								<FormControl>
-									<InputWithIcon icon={<User className='size-4' />} placeholder="Enter user's name" {...field} />
+									<InputWithIcon
+										icon={<User className='size-4' />}
+										placeholder="Enter user's name"
+										{...field}
+									/>
 								</FormControl>
 								<FormDescription>The full name of the user.</FormDescription>
 								<FormMessage />
@@ -102,7 +111,9 @@ export function UserForm({ defaultValues, action, mode }: UserFormProps) {
 										{...field}
 									/>
 								</FormControl>
-								<FormDescription>The user&apos;s email address for login and communication.</FormDescription>
+								<FormDescription>
+									The user&apos;s email address for login and communication.
+								</FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
@@ -125,7 +136,9 @@ export function UserForm({ defaultValues, action, mode }: UserFormProps) {
 									<SelectItem value='admin'>Admin</SelectItem>
 								</SelectContent>
 							</Select>
-							<FormDescription>The user&apos;s role determines their permissions in the system.</FormDescription>
+							<FormDescription>
+								The user&apos;s role determines their permissions in the system.
+							</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}

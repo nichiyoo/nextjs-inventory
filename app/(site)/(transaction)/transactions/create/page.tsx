@@ -14,8 +14,8 @@ export default async function Page(): Promise<React.JSX.Element> {
 			<Header>
 				<HeaderTitle>Create Transaction</HeaderTitle>
 				<HeaderDescription>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat commodi soluta aut saepe assumenda natus
-					dignissimos possimus corrupti a quae!
+					Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat commodi soluta aut saepe assumenda
+					natus dignissimos possimus corrupti a quae!
 				</HeaderDescription>
 			</Header>
 

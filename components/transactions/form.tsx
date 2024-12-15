@@ -16,6 +16,8 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { find, forecast } from '@/actions/products/action';
+import { useNotification } from '@/store/use-notification';
 
 const schema = z.object({
 	transaction_id: z.number().optional(),
@@ -40,6 +42,7 @@ interface TransactionFormProps {
 
 export function TransactionForm({ defaultValues, products, actions, mode }: TransactionFormProps) {
 	const router = useRouter();
+	const { notify } = useNotification();
 	const { toast } = useToast();
 
 	const messages: Record<string, ToastProps> = {
@@ -54,6 +57,11 @@ export function TransactionForm({ defaultValues, products, actions, mode }: Tran
 		error: {
 			title: 'Error',
 			description: 'Failed to submit the form. Please try again.',
+			variant: 'destructive',
+		},
+		low: {
+			title: 'Transaction Success and Product stock is low',
+			description: 'Minimum reorder point for this product is reached',
 			variant: 'destructive',
 		},
 	};
@@ -73,7 +81,20 @@ export function TransactionForm({ defaultValues, products, actions, mode }: Tran
 	async function handleSubmit(data: TransactionFormValues) {
 		try {
 			await actions(data);
-			toast(message);
+
+			const product = await find(data.product_id);
+			if (!product) throw new Error('Product not found');
+
+			const result = await forecast(data.product_id);
+
+			if (product.stock < result.rop) {
+				toast(messages.low);
+				notify(messages.low);
+			} else {
+				toast(message);
+				notify(message);
+			}
+
 			router.push('/sales');
 		} catch (error) {
 			toast(messages.error);
@@ -84,7 +105,7 @@ export function TransactionForm({ defaultValues, products, actions, mode }: Tran
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-8'>
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+				<div className='grid md:grid-cols-2 gap-6'>
 					<FormField
 						control={form.control}
 						name='product_id'
@@ -131,60 +152,60 @@ export function TransactionForm({ defaultValues, products, actions, mode }: Tran
 						)}
 					/>
 				</div>
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-					<FormField
-						control={form.control}
-						name='date'
-						render={({ field }) => (
-							<FormItem className='flex flex-col'>
-								<FormLabel>Date</FormLabel>
-								<Popover>
-									<PopoverTrigger asChild>
-										<FormControl>
-											<Button
-												variant={'outline'}
-												className={`w-full pl-3 text-left font-normal ${!field.value && 'text-muted-foreground'}`}>
-												{field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
-												<Calendar className='ml-auto h-4 w-4 opacity-50' />
-											</Button>
-										</FormControl>
-									</PopoverTrigger>
-									<PopoverContent className='w-auto p-0' align='start'>
-										<CalendarComponent
-											mode='single'
-											selected={field.value}
-											onSelect={field.onChange}
-											disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-											initialFocus
-										/>
-									</PopoverContent>
-								</Popover>
-								<FormDescription>The date of the transaction.</FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name='total'
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Total</FormLabel>
-								<FormControl>
-									<InputWithIcon
-										icon={<DollarSign className='size-4' />}
-										type='number'
-										placeholder='0.00'
-										{...field}
-										onChange={(e) => field.onChange(parseFloat(e.target.value))}
+				<FormField
+					control={form.control}
+					name='date'
+					render={({ field }) => (
+						<FormItem className='flex flex-col'>
+							<FormLabel>Date</FormLabel>
+							<Popover>
+								<PopoverTrigger asChild>
+									<FormControl>
+										<Button
+											variant={'outline'}
+											className={`w-full pl-3 text-left font-normal ${
+												!field.value && 'text-muted-foreground'
+											}`}>
+											{field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+											<Calendar className='ml-auto h-4 w-4 opacity-50' />
+										</Button>
+									</FormControl>
+								</PopoverTrigger>
+								<PopoverContent className='w-auto p-0' align='start'>
+									<CalendarComponent
+										mode='single'
+										selected={field.value}
+										onSelect={field.onChange}
+										disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
+										initialFocus
 									/>
-								</FormControl>
-								<FormDescription>The total value of the transaction.</FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				</div>
+								</PopoverContent>
+							</Popover>
+							<FormDescription>The date of the transaction.</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name='total'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Total</FormLabel>
+							<FormControl>
+								<InputWithIcon
+									icon={<DollarSign className='size-4' />}
+									type='number'
+									placeholder='0.00'
+									{...field}
+									onChange={(e) => field.onChange(parseFloat(e.target.value))}
+								/>
+							</FormControl>
+							<FormDescription>The total value of the transaction.</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 				<FormField
 					control={form.control}
 					name='type'

@@ -19,6 +19,7 @@ import { User } from '@/lib/types';
 import { remove } from '@/actions/users/actions';
 import useConfirm from '@/hooks/use-confirm';
 import { useToast } from '@/hooks/use-toast';
+import { useNotification } from '@/store/use-notification';
 
 export const columns: ColumnDef<User>[] = [
 	{
@@ -90,6 +91,7 @@ const TableAction: React.FC<TableActionProps> = ({ row }) => {
 
 	const { toast } = useToast();
 	const { confirm } = useConfirm();
+	const { notify } = useNotification();
 
 	async function handleDelete() {
 		confirm({
@@ -99,10 +101,13 @@ const TableAction: React.FC<TableActionProps> = ({ row }) => {
 		})
 			.then(async () => {
 				await remove(row.original.user_id);
-				toast({
+				const message = {
 					title: 'Product deleted',
 					description: 'Product has been deleted successfully',
-				});
+				};
+
+				toast(message);
+				notify(message);
 			})
 			.catch(() => {
 				console.log('Cancelled');

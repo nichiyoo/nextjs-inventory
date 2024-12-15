@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNotification } from '@/store/use-notification';
 
 const schema = z.object({
 	product_id: z.number().optional(),
@@ -34,6 +35,7 @@ interface ProductFormProps {
 export function ProductForm({ defaultValues, action, mode }: ProductFormProps) {
 	const router = useRouter();
 	const { toast } = useToast();
+	const { notify } = useNotification();
 
 	const messages: Record<string, ToastProps> = {
 		create: {
@@ -68,7 +70,10 @@ export function ProductForm({ defaultValues, action, mode }: ProductFormProps) {
 	async function handleSubmit(data: ProductFormValues) {
 		try {
 			await action(data);
+
 			toast(message);
+			notify(message);
+
 			router.push('/products');
 		} catch (error) {
 			toast(messages.error);
@@ -87,9 +92,15 @@ export function ProductForm({ defaultValues, action, mode }: ProductFormProps) {
 							<FormItem>
 								<FormLabel>Product Name</FormLabel>
 								<FormControl>
-									<InputWithIcon icon={<Package className='size-4' />} placeholder='Enter product name' {...field} />
+									<InputWithIcon
+										icon={<Package className='size-4' />}
+										placeholder='Enter product name'
+										{...field}
+									/>
 								</FormControl>
-								<FormDescription>The name of the product as it will appear in the inventory.</FormDescription>
+								<FormDescription>
+									The name of the product as it will appear in the inventory.
+								</FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
@@ -101,15 +112,17 @@ export function ProductForm({ defaultValues, action, mode }: ProductFormProps) {
 							<FormItem>
 								<FormLabel>Unit</FormLabel>
 								<FormControl>
-									<InputWithIcon icon={<Ruler className='size-4' />} placeholder='e.g., kg, liter, piece' {...field} />
+									<InputWithIcon
+										icon={<Ruler className='size-4' />}
+										placeholder='e.g., kg, liter, piece'
+										{...field}
+									/>
 								</FormControl>
 								<FormDescription>The unit of measurement for this product.</FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
-				</div>
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
 					<FormField
 						control={form.control}
 						name='price'
@@ -153,8 +166,6 @@ export function ProductForm({ defaultValues, action, mode }: ProductFormProps) {
 							</FormItem>
 						)}
 					/>
-				</div>
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
 					<FormField
 						control={form.control}
 						name='holding_cost'
@@ -170,7 +181,9 @@ export function ProductForm({ defaultValues, action, mode }: ProductFormProps) {
 										onChange={(e) => field.onChange(parseFloat(e.target.value))}
 									/>
 								</FormControl>
-								<FormDescription>The cost to hold one unit of this product in inventory.</FormDescription>
+								<FormDescription>
+									The cost to hold one unit of this product in inventory.
+								</FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}

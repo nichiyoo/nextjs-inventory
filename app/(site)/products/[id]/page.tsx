@@ -12,6 +12,7 @@ import { eq } from 'drizzle-orm';
 import { forecast } from '@/actions/products/action';
 import { notFound } from 'next/navigation';
 import { products } from '@/database/schema';
+import { types } from '@/lib/contant';
 
 interface PageProps {
 	params: Promise<{
@@ -33,7 +34,6 @@ export default async function Page(props: PageProps): Promise<React.JSX.Element>
 	if (!data) notFound();
 
 	const { transactions, ...product } = data;
-
 	const result = await forecast(product.product_id);
 
 	const end = new Date();
@@ -41,7 +41,7 @@ export default async function Page(props: PageProps): Promise<React.JSX.Element>
 	const range = eachMonthOfInterval({ start, end });
 
 	const monthly = range.map((date) => {
-		const sales = data.transactions.filter((item) => isSameMonth(item.date, date));
+		const sales = data.transactions.filter((item) => item.type === types.sales && isSameMonth(item.date, date));
 		const actual = sales.reduce((acc, curr) => acc + curr.quantity, 0);
 
 		const predicted = result.past.find((item: { month: Date }) => isSameMonth(item.month, date));
@@ -49,7 +49,7 @@ export default async function Page(props: PageProps): Promise<React.JSX.Element>
 
 		return {
 			date: date,
-			actual: actual,
+			actual: Math.abs(actual),
 			predicted: predicted ? Math.round(predicted.quantity) : future ? Math.round(future.quantity) : 0,
 		};
 	});

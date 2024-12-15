@@ -34,8 +34,12 @@ export type Procurement = Omit<Transaction, 'type'> & { type: 'procurements' };
 
 export type User = InferSelectModel<typeof users>;
 
-export interface ToastProps {
+export type ToastProps = {
 	title: string;
 	description: string;
 	variant?: 'default' | 'destructive';
-}
+};
+
+export type NotificationProps = ToastProps & {
+	id: string;
+};

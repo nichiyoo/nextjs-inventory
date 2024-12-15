@@ -20,6 +20,7 @@ import { MoreHorizontal } from 'lucide-react';
 import { remove } from '@/actions/transactions/action';
 import useConfirm from '@/hooks/use-confirm';
 import { useToast } from '@/hooks/use-toast';
+import { useNotification } from '@/store/use-notification';
 
 export const columns: ColumnDef<Transaction & { product: Product }>[] = [
 	{
@@ -122,6 +123,7 @@ const TableAction: React.FC<TableActionProps> = ({ row }) => {
 
 	const { toast } = useToast();
 	const { confirm } = useConfirm();
+	const { notify } = useNotification();
 
 	async function handleDelete() {
 		confirm({
@@ -131,10 +133,14 @@ const TableAction: React.FC<TableActionProps> = ({ row }) => {
 		})
 			.then(async () => {
 				await remove(row.original.transaction_id);
-				toast({
+
+				const message = {
 					title: 'Transaction deleted',
 					description: 'Transaction has been deleted successfully',
-				});
+				};
+
+				toast(message);
+				notify(message);
 			})
 			.catch(() => {
 				console.log('Cancelled');

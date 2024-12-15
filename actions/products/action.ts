@@ -20,7 +20,7 @@ const schema = z.object({
 	order_cost: z.number().nonnegative('Order cost must be non-negative'),
 });
 
-async function find(id: number) {
+export async function find(id: number) {
 	return await db.query.products.findFirst({
 		where: eq(products.product_id, id),
 	});
@@ -31,7 +31,6 @@ export async function create(data: z.infer<typeof schema>) {
 	if (!result.success) throw result.error;
 
 	await db.insert(products).values(result.data);
-	revalidateTag('products');
 }
 
 export async function update(data: z.infer<typeof schema>) {
@@ -50,7 +49,6 @@ export async function update(data: z.infer<typeof schema>) {
 		})
 		.where(eq(products.product_id, result.data.product_id));
 
-	revalidateTag('products');
 	revalidateTag('transactions');
 }
 
@@ -60,7 +58,6 @@ export async function remove(id: number) {
 
 	await db.delete(products).where(eq(products.product_id, id));
 
-	revalidateTag('products');
 	revalidateTag('transactions');
 }
 
@@ -75,9 +72,9 @@ interface MonthlyData {
 	avergae: number;
 }
 
-export async function forecast(id: number) {
+export async function forecast(product_id: number) {
 	const data = await db.query.products.findFirst({
-		where: eq(products.product_id, id),
+		where: eq(products.product_id, product_id),
 		with: {
 			transactions: true,
 		},
