@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Inventory Management System
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This project is a simple inventory management system built with Next.js. It allows for CRUD operations on product data, updates stock based on sales and procurement, forecasts sales for the next month, calculates Reorder Point (ROP) and Economic Order Quantity (EOQ), and notifies users when stock falls below the ROP after a sale.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+[Baca dalam Bahasa Indonesia](./readme_id.md)
+
+Repository: [https://github.com/nichiyoo/nextjs-inventory](https://github.com/nichiyoo/nextjs-inventory)
+
+## Technologies Used
+
+-   [Next.js](https://nextjs.org/) - React framework for building web applications
+-   [Bun](https://bun.sh/) - JavaScript runtime and package manager
+-   [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+-   [Drizzle ORM](https://orm.drizzle.team/) - TypeScript ORM for SQL databases
+-   [shadcn/ui](https://ui.shadcn.com/) - Re-usable components built with Radix UI and Tailwind CSS
+-   [Zod](https://github.com/colinhacks/zod) - TypeScript-first schema validation
+-   [Zustand](https://github.com/pmndrs/zustand) - State management
+-   [Arima](https://github.com/zemlyansky/arima) - Time series forecasting
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+-   [Bun](https://bun.sh/) (latest version)
+-   [Git](https://git-scm.com/)
+
+## Installation
+
+1. Clone the repository:
+
+    ```
+    git clone https://github.com/nichiyoo/nextjs-inventory.git
+    cd nextjs-inventory
+    ```
+
+2. Install dependencies:
+    ```
+    bun install
+    ```
+
+## Environment Setup
+
+1. Copy the `.env.example` file to create a new `.env` file:
+
+    ```
+    cp .env.example .env
+    ```
+
+2. Open the `.env` file and ensure it contains the following values:
+
+    ```
+    DATABASE_FILE_NAME=file:database/database.db
+    NEXT_PUBLIC_APP_NAME="Hokki Frozen Food"
+    ```
+
+    You can modify the `NEXT_PUBLIC_APP_NAME` if needed.
+
+## Database Setup
+
+1. Push the database schema:
+
+    ```
+    bun run db:push
+    ```
+
+2. (Optional) Seed the database:
+    ```
+    bun run db:seed
+    ```
+
+## Running the Application
+
+### Development Mode
+
+To start the development server:
+
+```
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Production Mode
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To build and start the application for production:
 
-## Learn More
+1. Build the application:
 
-To learn more about Next.js, take a look at the following resources:
+    ```
+    bun run build
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Start the production server:
+    ```
+    bun run start
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Available Scripts
 
-## Deploy on Vercel
+-   `bun run dev`: Start the development server
+-   `bun run build`: Build the application for production
+-   `bun run start`: Start the production server
+-   `bun run lint`: Run ESLint
+-   `bun run db:push`: Push database schema changes
+-   `bun run db:migrate`: Run database migrations
+-   `bun run db:generate`: Generate migration files
+-   `bun run db:seed`: Seed the database
+-   `bun run db:studio`: Open Drizzle Studio for database management
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+-   CRUD operations for product data
+-   Stock updates based on sales and procurement
+-   Sales forecasting for the next month
+-   ROP (Reorder Point) and EOQ (Economic Order Quantity) calculations
+-   User notifications when stock falls below ROP after a sale
+-   User management system
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
