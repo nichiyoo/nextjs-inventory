@@ -30,8 +30,7 @@ export default async function Page(props: PageProps): Promise<React.JSX.Element>
 			<Header>
 				<HeaderTitle>Edit Product</HeaderTitle>
 				<HeaderDescription>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat commodi soluta aut saepe assumenda natus
-					dignissimos possimus corrupti a quae!
+					Update product details like stock quantity, price, or description with ease.
 				</HeaderDescription>
 			</Header>
 

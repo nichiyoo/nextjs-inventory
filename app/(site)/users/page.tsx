@@ -20,8 +20,7 @@ export default async function Page(): Promise<React.JSX.Element> {
 			<Header>
 				<HeaderTitle>User Data</HeaderTitle>
 				<HeaderDescription>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat commodi soluta aut saepe assumenda natus
-					dignissimos possimus corrupti a quae!
+					View a list of all users with details like roles, activity status, and permissions.
 				</HeaderDescription>
 			</Header>
 			<DefaultTable columns={columns} data={data}>

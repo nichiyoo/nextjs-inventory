@@ -59,8 +59,8 @@ export default async function Page(props: PageProps): Promise<React.JSX.Element>
 			<Header>
 				<HeaderTitle>Product Detail</HeaderTitle>
 				<HeaderDescription>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat commodi soluta aut saepe assumenda
-					natus dignissimos possimus corrupti a quae!
+					View comprehensive information about a specific product, including recent transactions, stock
+					history, and reorder status.
 				</HeaderDescription>
 			</Header>
 

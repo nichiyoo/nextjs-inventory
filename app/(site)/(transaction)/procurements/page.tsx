@@ -27,8 +27,7 @@ export default async function Page(): Promise<React.JSX.Element> {
 			<Header>
 				<HeaderTitle>Procurements Data</HeaderTitle>
 				<HeaderDescription>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat commodi soluta aut saepe assumenda natus
-					dignissimos possimus corrupti a quae!
+					Browse a detailed history of transactions, including timestamps, product details, and quantities.
 				</HeaderDescription>
 			</Header>
 

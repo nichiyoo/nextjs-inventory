@@ -24,8 +24,9 @@ export default async function Page(): Promise<React.JSX.Element> {
 			<Header>
 				<HeaderTitle>Dashboard</HeaderTitle>
 				<HeaderDescription>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat commodi soluta aut saepe assumenda natus
-					dignissimos possimus corrupti a quae!
+					Get a quick summary of the inventory system, including total stock levels, recent transactions, and
+					alerts for low stock or reorder needs. Visualize key metrics with charts and graphs for sales trends
+					and stock forecasts.
 				</HeaderDescription>
 			</Header>
 
@@ -35,7 +36,11 @@ export default async function Page(): Promise<React.JSX.Element> {
 				))}
 			</div>
 
-			<Chart title='Transactions' description='Showing total transactions for the last 3 months' data={result.daily} />
+			<Chart
+				title='Transactions'
+				description='Showing total transactions for the last 3 months'
+				data={result.daily}
+			/>
 		</div>
 	);
 }

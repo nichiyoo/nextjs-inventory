@@ -11,8 +11,7 @@ export default async function Page(): Promise<React.JSX.Element> {
 			<Header>
 				<HeaderTitle>Create Product</HeaderTitle>
 				<HeaderDescription>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat commodi soluta aut saepe assumenda natus
-					dignissimos possimus corrupti a quae!
+					Add new products to the inventory, specifying details such as name, stock level, and price.
 				</HeaderDescription>
 			</Header>
 

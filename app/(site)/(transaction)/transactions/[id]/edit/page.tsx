@@ -30,10 +30,7 @@ export default async function Page(props: PageProps): Promise<React.JSX.Element>
 		<div className='grid gap-8'>
 			<Header>
 				<HeaderTitle>Edit Transaction</HeaderTitle>
-				<HeaderDescription>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat commodi soluta aut saepe assumenda natus
-					dignissimos possimus corrupti a quae!
-				</HeaderDescription>
+				<HeaderDescription>Modify transaction entries to ensure accurate inventory tracking.</HeaderDescription>
 			</Header>
 
 			<div className='border border-border p-8 rounded-xl bg-card'>
