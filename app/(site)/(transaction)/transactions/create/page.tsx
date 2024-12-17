@@ -6,6 +6,8 @@ import { TransactionForm } from '@/components/transactions/form';
 import { create } from '@/actions/transactions/action';
 import db from '@/lib/drizzle';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page(): Promise<React.JSX.Element> {
 	const products = await db.query.products.findMany();
 
